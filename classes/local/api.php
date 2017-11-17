@@ -52,22 +52,6 @@ class api extends \curl {
         return  self::get_course_acl_role_prefix(). $courseid;
     }
 
-    public static function get_course_acl_group_identifier($courseid) {
-        return "moodle_course_" . $courseid;
-    }
-
-    public static function get_course_acl_group_name($courseid) {
-        return "Moodle_Course_" . $courseid;
-    }
-
-    public static function get_courses_series_title_prefix() {
-        return "Course_Series_";
-    }
-
-    public static function get_courses_series_title($courseid) {
-        return self::get_courses_series_title_prefix() . $courseid;
-    }
-
     public function __construct($username, $password, $timeout = 30, $settings = array()) {
         parent::__construct($settings);
         $this->username = $username;
