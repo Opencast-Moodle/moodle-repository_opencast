@@ -23,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['authenticationrequestfailed'] = 'Authentication request failed, incorrect response from server';
 $string['configplugin'] = 'Opencast settings';
 $string['opencastauthor'] = 'Opencast default author';
 $string['opencastapiurl'] = 'Url to opencast API';
