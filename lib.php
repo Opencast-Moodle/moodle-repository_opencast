@@ -117,8 +117,21 @@ class repository_opencast extends repository {
      */
     private function get_course_videos($courseid) {
 
-        $query = '/api/events?sign=1&withmetadata=1&withpublications=1';
-        $videos = $this->api_get($query, array(api::get_course_acl_role($courseid)));
+        $mapping = \tool_opencast\seriesmapping::get_record(array('courseid' => $courseid));
+
+        if (!$mapping || !($seriesid = $mapping->get('series'))) {
+            return array();
+        }
+        $seriesfilter = "series:" . $seriesid;
+
+        $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter='. urlencode($seriesfilter);
+        try {
+            $api = new api();
+            $videos = $api->oc_get($query);
+            $videos = json_decode($videos);
+        } catch (\moodle_exception $e) {
+            return array();
+        }
 
         if (empty($videos)) {
             return array();
