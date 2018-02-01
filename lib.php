@@ -90,7 +90,7 @@ class repository_opencast extends repository {
 
             if ($publication->channel == 'api') {
                 foreach ($publication->attachments as $attachment) {
-                    if (!empty($attachment->url)) {
+                    if ($attachment->flavor === 'presenter/search+preview' && !empty($attachment->url)) {
                         $video->thumbnail = $attachment->url;
                     }
                 }
