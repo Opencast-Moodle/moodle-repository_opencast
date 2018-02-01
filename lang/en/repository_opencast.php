@@ -25,7 +25,4 @@
 
 $string['configplugin'] = 'Opencast settings';
 $string['opencastauthor'] = 'Opencast default author';
-$string['opencastapiurl'] = 'Url to opencast API';
-$string['opencastapipassword'] = 'Password for opencast user';
-$string['opencastapiuser'] = 'User for API calls';
 $string['pluginname'] = 'Opencast Videos';
