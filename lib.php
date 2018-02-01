@@ -89,9 +89,16 @@ class repository_opencast extends repository {
         foreach ($publications as $publication) {
 
             if ($publication->channel == 'api') {
+                // Try finding the best preview image:
+                // presentation/search+preview > presenter/search+preview > any other preview
                 foreach ($publication->attachments as $attachment) {
-                    if ($attachment->flavor === 'presenter/search+preview' && !empty($attachment->url)) {
-                        $video->thumbnail = $attachment->url;
+                    if (!empty($attachment->url) && strpos($attachment->flavor, '+preview') > 0) {
+                        if (!isset($video->thumbnail) || strpos($attachment->flavor, '/search+preview') > 0) {
+                            $video->thumbnail = $attachment->url;
+                            if ($attachment->flavor === 'presentation/search+preview') {
+                                break;
+                            }
+                        }
                     }
                 }
 
