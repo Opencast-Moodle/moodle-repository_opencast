@@ -94,14 +94,19 @@ class repository_opencast extends repository {
                         $video->thumbnail = $attachment->url;
                     }
                 }
-            }
-            if ($publication->media) {
-                foreach ($publication->media as $media) {
-                    if (!empty($media->has_video)) {
-                        $video->url = $media->url;
-                        // Check mimetype needed for embedding in moodle.
-                        $ending = pathinfo($media->url, PATHINFO_EXTENSION);
-                        $video->title .= '.' . $ending;
+
+                if ($publication->media) {
+                    foreach ($publication->media as $media) {
+                        if (!empty($media->has_video)) {
+                            $video->url = $media->url;
+                            // Check mimetype needed for embedding in moodle.
+                            $ending = pathinfo($media->url, PATHINFO_EXTENSION);
+                            $existingending = pathinfo($video->title, PATHINFO_EXTENSION);
+                            if ($ending !== $existingending) {
+                                $video->title .= '.' . $ending;
+                            }
+                            return true;
+                        }
                     }
                 }
             }
