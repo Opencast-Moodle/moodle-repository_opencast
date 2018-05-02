@@ -24,7 +24,7 @@
  */
 require_once($CFG->dirroot . '/repository/lib.php');
 
-use \repository_opencast\local\api;
+use \tool_opencast\local\api;
 
 /**
  *  repository_opencast class is used to browse opencast files
@@ -36,30 +36,16 @@ use \repository_opencast\local\api;
  */
 class repository_opencast extends repository {
 
+    private $api;
+
     /**
      * Add Instance settings input to moodle form.
      *
      * @param moodleform $mform
+     * @param string $classname repository class name
      */
-    public static function instance_config_form($mform) {
-
-        $mform->addElement('text', 'opencast_apiurl', get_string('opencastapiurl', 'repository_opencast'), array('size' => 100));
-        $mform->setType('opencast_apiurl', PARAM_URL);
-
-        $strrequired = get_string('required');
-        $mform->addRule('opencast_apiurl', $strrequired, 'required', null, 'client');
-
-        $mform->addElement('text', 'opencast_apiuser', get_string('opencastapiuser', 'repository_opencast'));
-        $mform->setType('opencast_apiuser', PARAM_TEXT);
-
-        $strrequired = get_string('required');
-        $mform->addRule('opencast_apiuser', $strrequired, 'required', null, 'client');
-
-        $mform->addElement('text', 'opencast_apipassword', get_string('opencastapipassword', 'repository_opencast'));
-        $mform->setType('opencast_apipassword', PARAM_TEXT);
-
-        $strrequired = get_string('required');
-        $mform->addRule('opencast_apipassword', $strrequired, 'required', null, 'client');
+    public static function type_config_form($mform, $classname = 'repository') {
+        parent::type_config_form($mform);
 
         $mform->addElement('text', 'opencast_author', get_string('opencastauthor', 'repository_opencast'));
         $mform->setType('opencast_author', PARAM_TEXT);
@@ -70,31 +56,10 @@ class repository_opencast extends repository {
      *
      * @return array
      */
-    public static function get_instance_option_names() {
-        return array(
-            'opencast_apiurl',
-            'opencast_apiuser',
-            'opencast_apipassword',
-            'opencast_author'
-        );
-    }
-
-    /**
-     * Do an api GET call and decode the response.
-     *
-     * @param string $query query parameter of API call
-     * @param array $withroles restrict result to that roles.
-     * @return array result array or empty.
-     */
-    private function api_get($query, $withroles = array()) {
-
-        $url = $this->get_option('opencast_apiurl') . $query;
-        $user = $this->get_option('opencast_apiuser');
-        $pass = $this->get_option('opencast_apipassword');
-
-        $api = new api($user, $pass);
-        $result = $api->oc_get($url, $withroles);
-        return json_decode($result);
+    public static function get_type_option_names() {
+        $typeoptions = parent::get_type_option_names();
+        $typeoptions [] = 'opencast_author';
+        return $typeoptions;
     }
 
     /**
@@ -111,8 +76,11 @@ class repository_opencast extends repository {
             return false;
         }
 
+        $api = new api();
+
         $query = '/api/events/' . $video->identifier . '/publications/';
-        $publications = $this->api_get($query);
+        $result = $api->oc_get($query);
+        $publications = json_decode($result);
 
         if (empty($publications)) {
             return false;
@@ -121,19 +89,31 @@ class repository_opencast extends repository {
         foreach ($publications as $publication) {
 
             if ($publication->channel == 'api') {
+                // Try finding the best preview image:
+                // presentation/search+preview > presenter/search+preview > any other preview
                 foreach ($publication->attachments as $attachment) {
-                    if (!empty($attachment->url)) {
-                        $video->thumbnail = $attachment->url;
+                    if (!empty($attachment->url) && strpos($attachment->flavor, '+preview') > 0) {
+                        if (!isset($video->thumbnail) || strpos($attachment->flavor, '/search+preview') > 0) {
+                            $video->thumbnail = $attachment->url;
+                            if ($attachment->flavor === 'presentation/search+preview') {
+                                break;
+                            }
+                        }
                     }
                 }
-            }
-            if ($publication->media) {
-                foreach ($publication->media as $media) {
-                    if (!empty($media->has_video)) {
-                        $video->url = $media->url;
-                        // Check mimetype needed for embedding in moodle.
-                        $ending = pathinfo($media->url, PATHINFO_EXTENSION);
-                        $video->title .= '.' . $ending;
+
+                if ($publication->media) {
+                    foreach ($publication->media as $media) {
+                        if (!empty($media->has_video)) {
+                            $video->url = $media->url;
+                            // Check mimetype needed for embedding in moodle.
+                            $ending = pathinfo($media->url, PATHINFO_EXTENSION);
+                            $existingending = pathinfo($video->title, PATHINFO_EXTENSION);
+                            if ($ending !== $existingending) {
+                                $video->title .= '.' . $ending;
+                            }
+                            return true;
+                        }
                     }
                 }
             }
@@ -149,8 +129,21 @@ class repository_opencast extends repository {
      */
     private function get_course_videos($courseid) {
 
-        $query = '/api/events?sign=1&withmetadata=1&withpublications=1';
-        $videos = $this->api_get($query, array(api::get_course_acl_role($courseid)));
+        $mapping = \tool_opencast\seriesmapping::get_record(array('courseid' => $courseid));
+
+        if (!$mapping || !($seriesid = $mapping->get('series'))) {
+            return array();
+        }
+        $seriesfilter = "series:" . $seriesid;
+
+        $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter='. urlencode($seriesfilter);
+        try {
+            $api = new api();
+            $videos = $api->oc_get($query);
+            $videos = json_decode($videos);
+        } catch (\moodle_exception $e) {
+            return array();
+        }
 
         if (empty($videos)) {
             return array();
