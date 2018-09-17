@@ -15,15 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * String definitions
+ * Privacy Subsystem implementation for repository_opencast.
  *
  * @package    repository_opencast
- * @copyright  2017 Andreas Wagner, SYNERGY LEARNING
- * @author     Andreas Wagner
+ * @copyright  2018 Tamara Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['configplugin'] = 'Opencast settings';
-$string['opencastauthor'] = 'Opencast default author';
-$string['pluginname'] = 'Opencast Videos';
-$string['privacy:metadata'] = 'The opencast repository only displays videos from Opencast, but does not effect or store any personal data.';
+namespace repository_opencast\privacy;
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Privacy Subsystem for repository_opencast implementing null_provider.
+ *
+ * @copyright  2018 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
