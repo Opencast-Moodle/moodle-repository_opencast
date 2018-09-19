@@ -37,13 +37,16 @@ use \tool_opencast\local\api;
 class repository_opencast extends repository {
 
     /**
-     * Add type settings input to moodle form.
+     * This method adds a select form and additional information to the settings form..
      *
-     * @param moodleform $mform
-     * @param string $classname repository class name
+     * @param \moodleform $mform Moodle form (passed by reference)
      */
-    public static function type_config_form($mform, $classname = 'repository') {
-        parent::type_config_form($mform);
+    public static function instance_config_form($mform) {
+        if (!has_capability('moodle/site:config', context_system::instance())) {
+            $mform->addElement('static', null, '',  get_string('nopermissions', 'error', get_string('configplugin',
+                'repository_opencast')));
+            return false;
+        }
 
         $mform->addElement('text', 'opencast_author', get_string('opencastauthor', 'repository_opencast'));
         $mform->setType('opencast_author', PARAM_TEXT);
@@ -61,51 +64,45 @@ class repository_opencast extends repository {
         $mform->setType('opencast_thumbnailflavorfallback', PARAM_TEXT);
         $mform->addHelpButton('opencast_thumbnailflavorfallback', 'opencastthumbnailflavorfallback', 'repository_opencast');
 
+        $mform->addElement('checkbox', 'opencast_playerurl', get_string('opencastplayerurl', 'repository_opencast'));
+        $mform->setType('opencast_playerurl', PARAM_BOOL);
+        $mform->addHelpButton('opencast_playerurl', 'opencastplayerurl', 'repository_opencast');
+
         $mform->addElement('text', 'opencast_videoflavor', get_string('opencastvideoflavor', 'repository_opencast'));
         $mform->setType('opencast_videoflavor', PARAM_TEXT);
         $mform->addHelpButton('opencast_videoflavor', 'opencastvideoflavor', 'repository_opencast');
     }
 
     /**
-     * Return all the valid type option names.
+     * Save settings for repository instance
      *
-     * @return array
+     * @param array $options settings
+     * @return bool
      */
-    public static function get_type_option_names() {
-
-        $typeoptions = parent::get_type_option_names();
-        $typeoptions [] = 'opencast_author';
-        $typeoptions [] = 'opencast_channelid';
-        $typeoptions [] = 'opencast_thumbnailflavor';
-        $typeoptions [] = 'opencast_thumbnailflavorfallback';
-        $typeoptions [] = 'opencast_videoflavor';
-
-        return $typeoptions;
+    public function set_option($options = array()) {
+        $options['opencast_author'] = clean_param($options['opencast_author'], PARAM_TEXT);
+        $options['opencast_channelid'] = clean_param($options['opencast_channelid'], PARAM_TEXT);
+        $options['opencast_thumbnailflavor'] = clean_param($options['opencast_thumbnailflavor'], PARAM_TEXT);
+        $options['opencast_thumbnailflavorfallback'] = clean_param($options['opencast_thumbnailflavorfallback'], PARAM_TEXT);
+        $options['opencast_videoflavor'] = clean_param($options['opencast_videoflavor'], PARAM_TEXT);
+        $ret = parent::set_option($options);
+        return $ret;
     }
 
     /**
-     * Get a option for setup for the repository type.
+     * Names of the plugin settings
      *
-     * @param string $optionname
-     * @param string $defaultvalue
-     * @return string
+     * @return array
      */
-    private static function get_type_option($optionname, $defaultvalue = '') {
+    public static function get_instance_option_names() {
 
-        // There is a bug in method update_options of the class repository_type,
-        // which we intend to report to moodle tracker. Repository type
-        // uses type name and NOT frankenstyle name to store options in config_plugins.
-        // To make the code work in case this will be fixed we check two ways to retrieve
-        // the data.
-        $value = get_config('repository_opencast', $optionname);
-        if (!empty($value)) {
-            return $value;
-        }
-
-        if (!$value = get_config('opencast', $optionname)) {
-            return $defaultvalue;
-        }
-        return $value;
+        $instanceoptions = array();
+        $instanceoptions [] = 'opencast_author';
+        $instanceoptions [] = 'opencast_channelid';
+        $instanceoptions [] = 'opencast_thumbnailflavor';
+        $instanceoptions [] = 'opencast_thumbnailflavorfallback';
+        $instanceoptions [] = 'opencast_videoflavor';
+        return $instanceoptions;
     }
 
     /**
@@ -113,7 +110,7 @@ class repository_opencast extends repository {
      * @return string
      */
     private function get_channelid() {
-        return self::get_type_option('opencast_channelid', 'api');
+        return self::get_option('opencast_channelid', 'api');
     }
 
     /**
@@ -121,7 +118,7 @@ class repository_opencast extends repository {
      * @return string
      */
     private function get_author() {
-        return self::get_type_option('opencast_author');
+        return self::get_option('opencast_author');
     }
 
     /**
@@ -133,7 +130,7 @@ class repository_opencast extends repository {
     private function add_video_thumbnail_url($publication, &$video) {
 
         // Try to find a thumbnail url based on configuration.
-        $thumbnailflavor = self::get_type_option('opencast_thumbnailflavor');
+        $thumbnailflavor = self::get_option('opencast_thumbnailflavor');
         if (!empty($thumbnailflavor)) {
             foreach ($publication->attachments as $attachment) {
                 if ($attachment->flavor === $thumbnailflavor) {
@@ -144,7 +141,7 @@ class repository_opencast extends repository {
         }
 
         // Try fallback.
-        $thumbnailflavorfallback = self::get_type_option('opencast_thumbnailflavorfallback');
+        $thumbnailflavorfallback = self::get_option('opencast_thumbnailflavorfallback');
         if (!empty($thumbnailflavor)) {
             foreach ($publication->attachments as $attachment) {
                 if ($attachment->flavor === $thumbnailflavorfallback) {
@@ -172,7 +169,7 @@ class repository_opencast extends repository {
     private function add_video_url_and_title($publication, $video) {
 
         // Try to find a video by preferred configuration.
-        $videoflavor = self::get_type_option('opencast_videoflavor');
+        $videoflavor = self::get_option('opencast_videoflavor');
         if (!empty($videoflavor)) {
 
             foreach ($publication->media as $media) {
