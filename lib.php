@@ -51,6 +51,7 @@ class repository_opencast extends repository {
         $mform->addElement('text', 'opencast_channelid', get_string('opencastchannelid', 'repository_opencast'));
         $mform->setType('opencast_channelid', PARAM_TEXT);
         $mform->addHelpButton('opencast_channelid', 'opencastchannelid', 'repository_opencast');
+        $mform->addRule('opencast_channelid', get_string('required'), 'required', null, 'client');
 
         $mform->addElement('text', 'opencast_thumbnailflavor', get_string('opencastthumbnailflavor', 'repository_opencast'));
         $mform->setType('opencast_thumbnailflavor', PARAM_TEXT);
