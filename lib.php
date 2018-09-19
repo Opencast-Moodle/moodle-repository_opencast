@@ -82,6 +82,7 @@ class repository_opencast extends repository {
     public function set_option($options = array()) {
         $options['opencast_author'] = clean_param($options['opencast_author'], PARAM_TEXT);
         $options['opencast_channelid'] = clean_param($options['opencast_channelid'], PARAM_TEXT);
+        $options['opencast_playerurl'] = clean_param($options['opencast_playerurl'], PARAM_BOOL);
         $options['opencast_thumbnailflavor'] = clean_param($options['opencast_thumbnailflavor'], PARAM_TEXT);
         $options['opencast_thumbnailflavorfallback'] = clean_param($options['opencast_thumbnailflavorfallback'], PARAM_TEXT);
         $options['opencast_videoflavor'] = clean_param($options['opencast_videoflavor'], PARAM_TEXT);
@@ -99,6 +100,7 @@ class repository_opencast extends repository {
         $instanceoptions = array();
         $instanceoptions [] = 'opencast_author';
         $instanceoptions [] = 'opencast_channelid';
+        $instanceoptions [] = 'opencast_playerurl';
         $instanceoptions [] = 'opencast_thumbnailflavor';
         $instanceoptions [] = 'opencast_thumbnailflavorfallback';
         $instanceoptions [] = 'opencast_videoflavor';
@@ -229,6 +231,8 @@ class repository_opencast extends repository {
             return false;
         }
 
+        $useplayerurl = self::get_option('opencast_playerurl');
+
         foreach ($publications as $publication) {
 
             if ($publication->channel == $channelid) {
@@ -237,8 +241,12 @@ class repository_opencast extends repository {
                 $this->add_video_thumbnail_url($publication, $video);
 
                 // Add a url to video.
-                if ($publication->media) {
-                    $this->add_video_url_and_title($publication, $video);
+                if ($useplayerurl) {
+                    $video->url = $publication->url;
+                } else {
+                    if (!$publication->media || !$this->add_video_url_and_title($publication, $video)) {
+                        return false;
+                    }
                 }
             }
         }

@@ -27,6 +27,8 @@ $string['configplugin'] = 'Opencast settings';
 $string['opencastauthor'] = 'Opencast default author';
 $string['opencastchannelid'] = 'Opencast channelid';
 $string['opencastchannelid_help'] = 'Setup the channelid of the publication channel to search for retrieving url of thumbnail and video.';
+$string['opencastplayerurl'] = 'Embedd URL to player instead of media file.';
+$string['opencastplayerurl_help'] = 'If checked, the URL of the Opencast player is used. Otherwise the repository selects the URL to a video file of the Opencast event.';
 $string['opencastthumbnailflavor'] = 'Preferred flavor to get thumbnail';
 $string['opencastthumbnailflavor_help'] = 'A publication may have several attachments with different flavors.
     Setup the flavor (for example "presenter/search+preview"), that should be used to retrieve the thumbnail url. If there is no attachment with this flavor, the
