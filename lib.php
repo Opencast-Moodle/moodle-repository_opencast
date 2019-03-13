@@ -315,6 +315,9 @@ class repository_opencast extends repository {
         foreach ($videos as $video) {
             $listitem = array();
             $listitem['title'] = $video->title;
+            if (!file_extension_in_typegroup($video->title, $this->supported_filetypes())) {
+                $listitem['title'] = $video->title . '.mp4';
+            }
             $listitem['date'] = strtotime($video->start);
             $listitem['thumbnail'] = $video->thumbnail;
             $listitem['url'] = $video->url;
