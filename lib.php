@@ -261,7 +261,7 @@ class repository_opencast extends repository {
      */
     private function get_course_videos($courseid) {
 
-        $mapping = \tool_opencast\seriesmapping::get_record(array('courseid' => $courseid));
+        $mapping = \tool_opencast\seriesmapping::get_record(array('courseid' => $courseid, 'isdefault' => '1'));
 
         if (!$mapping || !($seriesid = $mapping->get('series'))) {
             return array();
