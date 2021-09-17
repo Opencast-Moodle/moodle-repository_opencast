@@ -212,7 +212,7 @@ class repository_opencast extends repository {
      * @param object $video
      * @return boolean true, when it is a valid video published for external api.
      */
-    private function add_video_published_data($video) {
+    private function add_video_published_data($ocinstanceid, $video) {
 
         $channelid = $this->get_channelid();
         $published = (count($video->publication_status) > 0 && (in_array($channelid, $video->publication_status)));
@@ -221,7 +221,7 @@ class repository_opencast extends repository {
             return false;
         }
 
-        $api = new api();
+        $api = new api($ocinstanceid);
 
         $query = '/api/events/' . $video->identifier . '/publications/';
         $result = $api->oc_get($query);
@@ -260,34 +260,40 @@ class repository_opencast extends repository {
      * @return array video object suitable for repository listing.
      */
     private function get_course_videos($courseid) {
-
-        $mapping = \tool_opencast\seriesmapping::get_record(array('courseid' => $courseid, 'isdefault' => '1'));
-
-        if (!$mapping || !($seriesid = $mapping->get('series'))) {
-            return array();
-        }
-        $seriesfilter = "series:" . $seriesid;
-
-        $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter=' . urlencode($seriesfilter);
-        try {
-            $api = new api();
-            $videos = $api->oc_get($query);
-            $videos = json_decode($videos);
-        } catch (\moodle_exception $e) {
-            return array();
-        }
-
-        if (empty($videos)) {
-            return array();
-        }
-
         $publishedvideos = [];
-        foreach ($videos as $video) {
 
-            if ($this->add_video_published_data($video)) {
-                $publishedvideos[] = $video;
+        // Get all videos from all instances and series.
+        foreach(\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
+            if(!$ocinstance->isvisible) {
+                continue;
+            }
+            $videos = array();
+
+            foreach(\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid, 'ocinstanceid' => $ocinstance->id)) as $mapping) {
+                if (!$mapping || !($seriesid = $mapping->get('series'))) {
+                    continue;
+                }
+
+                $seriesfilter = "series:" . $seriesid;
+
+                $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter=' . urlencode($seriesfilter);
+                try {
+                    $api = new api($ocinstance->id);
+                    $seriesvideos = $api->oc_get($query);
+                    $seriesvideos = json_decode($seriesvideos);
+                    $videos = array_merge($videos, $seriesvideos);
+                } catch (\moodle_exception $e) {
+                    continue;
+                }
+            }
+
+            foreach ($videos as $video) {
+                if ($this->add_video_published_data($ocinstance->id, $video)) {
+                    $publishedvideos[] = $video;
+                }
             }
         }
+
         return $publishedvideos;
     }
 
