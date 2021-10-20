@@ -29,64 +29,53 @@ defined('MOODLE_INTERNAL') || die();
 class repository_opencast_testcase extends advanced_testcase {
 
     public function test_add_video_published_data() {
-        global $CFG, $DB;
+        global $CFG;
 
         require_once($CFG->dirroot . '/repository/opencast/lib.php');
 
-        $this->resetAfterTest(true);
+        $this->resetAfterTest();
         $this->setAdminUser();
 
         $publications = json_decode(file_get_contents($CFG->dirroot . '/repository/opencast/tests/fixtures/testdata.js'));
-        $repository = $DB->get_record_sql(
-            "SELECT i.id
-             FROM {repository_instances} i
-             JOIN {repository} r on r.id = i.typeid AND r.type = ?", ['opencast']
-        );
-        $repository = new repository_opencast($repository->id);
+        $generator = $this->getDataGenerator()->get_plugin_generator('repository_opencast');
+        $instance = $generator->create_instance([
+            'pluginname' => 'Opencast',
+            'opencast_author' => 'Test user',
+            'opencast_channelid' => 'api',
+            'opencast_thumbnailflavor' => 'presenter/search+preview',
+            'opencast_thumbnailflavorfallback' => 'presentation/search+preview',
+            'opencast_videoflavor' => 'delivery/h264-720p',
+            'opencast_playerurl' => ''
+        ]);
+        $repository = new repository_opencast($instance->id);
 
         $video = new \stdClass();
         $video->title = 'Test';
-
-        // Checking without setup repository.
-        $video = $repository->phpu_adapter_test_listing($publications, $video);
-        $this->assertTrue(!isset($video->thumbnail));
 
         $publications[0]->channel = 'api';
         $video = $repository->phpu_adapter_test_listing($publications, $video);
-        $this->assertEquals($video->url, 'h264-540p.mp4');
-        $this->assertEquals($video->title, 'Test.mp4');
-        $this->assertEquals($video->thumbnail, 'tn_presentation_search_preview_1.png');
+        $this->assertEquals('h264-720p.mp4', $video->url);
+        $this->assertEquals( 'Test.mp4', $video->title,);
+        $this->assertEquals('tn_presenter_search_preview_1.png', $video->thumbnail);
 
-        // Setup the repository type.
-        set_config('opencast_channelid', 'switchcast-player', 'opencast');
-        set_config('opencast_thumbnailflavor', 'presenter/search+preview', 'opencast');
-        set_config('opencast_thumbnailflavorfallback', 'presentation/search+preview', 'opencast');
-        set_config('opencast_videoflavor', 'delivery/h264-720p', 'opencast');
-
-        $publications[0]->channel = 'switchcast-player';
-
-        $video = new \stdClass();
-        $video->title = 'Test';
-
-        $video = $repository->phpu_adapter_test_listing($publications, $video);
-        $this->assertEquals($video->url, 'h264-720p.mp4');
-        $this->assertEquals($video->title, 'Test.mp4');
-        $this->assertEquals($video->thumbnail, 'tn_presenter_search_preview_1.png');
-
-        set_config('opencast_channelid', 'switchcast-player', 'opencast');
-        set_config('opencast_thumbnailflavor', 'notvalid', 'opencast');
-        set_config('opencast_thumbnailflavorfallback', 'presentation/search+preview', 'opencast');
-        set_config('opencast_videoflavor', 'delivery/h264-720p', 'opencast');
-
-        $publications[0]->channel = 'switchcast-player';
+        // Test not valid thumbnail flavor.
+        $instance = $generator->create_instance([
+            'pluginname' => 'Opencast',
+            'opencast_author' => 'Test user',
+            'opencast_channelid' => 'api',
+            'opencast_thumbnailflavor' => 'notvalid',
+            'opencast_thumbnailflavorfallback' => 'presentation/search+preview',
+            'opencast_videoflavor' => 'delivery/h264-720p',
+            'opencast_playerurl' => ''
+        ]);
+        $repository = new repository_opencast($instance->id);
 
         $video = new \stdClass();
         $video->title = 'Test';
 
         $video = $repository->phpu_adapter_test_listing($publications, $video);
-        $this->assertEquals($video->url, 'h264-720p.mp4');
-        $this->assertEquals($video->title, 'Test.mp4');
-        $this->assertEquals($video->thumbnail, 'tn_presentation_search_preview_1.png');
+        $this->assertEquals('h264-720p.mp4', $video->url);
+        $this->assertEquals('Test.mp4', $video->title, );
+        $this->assertEquals('tn_presentation_search_preview_1.png', $video->thumbnail);
     }
-
 }
