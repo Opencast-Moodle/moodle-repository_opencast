@@ -26,7 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class repository_opencast_testcase
  */
-class repository_opencast_testcase extends advanced_testcase {
+class repository_opencast_testcase extends advanced_testcase
+{
 
     public function test_add_video_published_data() {
         global $CFG;
@@ -55,7 +56,7 @@ class repository_opencast_testcase extends advanced_testcase {
         $publications[0]->channel = 'api';
         $video = $repository->phpu_adapter_test_listing($publications, $video);
         $this->assertEquals('h264-720p.mp4', $video->url);
-        $this->assertEquals( 'Test.mp4', $video->title,);
+        $this->assertEquals('Test.mp4', $video->title,);
         $this->assertEquals('tn_presenter_search_preview_1.png', $video->thumbnail);
 
         // Test not valid thumbnail flavor.
@@ -75,7 +76,7 @@ class repository_opencast_testcase extends advanced_testcase {
 
         $video = $repository->phpu_adapter_test_listing($publications, $video);
         $this->assertEquals('h264-720p.mp4', $video->url);
-        $this->assertEquals('Test.mp4', $video->title, );
+        $this->assertEquals('Test.mp4', $video->title,);
         $this->assertEquals('tn_presentation_search_preview_1.png', $video->thumbnail);
     }
 }
