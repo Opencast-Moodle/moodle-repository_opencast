@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Test case for opencast repository.
  * @package    repository_opencast
  * @copyright  2018 Andreas Wagner, SYNERGY LEARNING
  * @author     Andreas Wagner
@@ -22,6 +23,9 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class repository_opencast_testcase
+ */
 class repository_opencast_testcase extends advanced_testcase {
 
     public function test_add_video_published_data() {

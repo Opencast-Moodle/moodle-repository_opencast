@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Plugin capabilities.
+ *
  * @package    repository_opencast
  * @copyright  2017 Andreas Wagner, SYNERGY LEARNING
  * @author     Andreas Wagner
@@ -24,7 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
     'repository/opencast:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,

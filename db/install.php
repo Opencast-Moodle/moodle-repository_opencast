@@ -15,10 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Installation file.
  * @package    repository_opencast
  * @copyright  2017 Andreas Wagner, SYNERGY LEARNING
  * @author     Andreas Wagner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Installation steps for the opencast repository.
+ * @return bool
+ * @throws repository_exception
  */
 function xmldb_repository_opencast_install() {
     global $CFG;

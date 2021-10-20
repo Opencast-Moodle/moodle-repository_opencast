@@ -22,6 +22,8 @@
  * @author     Andreas Wagner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/repository/lib.php');
 
 use \tool_opencast\local\api;
@@ -34,7 +36,8 @@ use \tool_opencast\local\api;
  * @author     Andreas Wagner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class repository_opencast extends repository {
+class repository_opencast extends repository
+{
 
     /**
      * This method adds a select form and additional information to the settings form..
@@ -43,7 +46,7 @@ class repository_opencast extends repository {
      */
     public static function instance_config_form($mform) {
         if (!has_capability('moodle/site:config', context_system::instance())) {
-            $mform->addElement('static', null, '',  get_string('nopermissions', 'error', get_string('configplugin',
+            $mform->addElement('static', null, '', get_string('nopermissions', 'error', get_string('configplugin',
                 'repository_opencast')));
             return false;
         }
@@ -60,7 +63,8 @@ class repository_opencast extends repository {
         $mform->setType('opencast_thumbnailflavor', PARAM_TEXT);
         $mform->addHelpButton('opencast_thumbnailflavor', 'opencastthumbnailflavor', 'repository_opencast');
 
-        $mform->addElement('text', 'opencast_thumbnailflavorfallback', get_string('opencastthumbnailflavorfallback', 'repository_opencast'));
+        $mform->addElement('text', 'opencast_thumbnailflavorfallback',
+            get_string('opencastthumbnailflavorfallback', 'repository_opencast'));
         $mform->setType('opencast_thumbnailflavorfallback', PARAM_TEXT);
         $mform->addHelpButton('opencast_thumbnailflavorfallback', 'opencastthumbnailflavorfallback', 'repository_opencast');
 
@@ -127,9 +131,10 @@ class repository_opencast extends repository {
      * Select the url for the video based on configuration of preferred flavors.
      *
      * @param object $publication
+     * @param object $video
      * @return string
      */
-    private function add_video_thumbnail_url($publication, &$video) {
+    private function add_video_thumbnail_url($publication, $video) {
 
         // Try to find a thumbnail url based on configuration.
         $thumbnailflavor = self::get_option('opencast_thumbnailflavor');
@@ -154,7 +159,7 @@ class repository_opencast extends repository {
         }
 
         // Automatically try to find the best preview image:
-        // presentation/search+preview > presenter/search+preview > any other preview
+        // presentation/search+preview > presenter/search+preview > any other preview.
         foreach ($publication->attachments as $attachment) {
             if (!empty($attachment->url) && strpos($attachment->flavor, '+preview') > 0) {
                 if (empty($video->url) || strpos($attachment->flavor, '/search+preview') > 0) {
@@ -168,6 +173,13 @@ class repository_opencast extends repository {
         return false;
     }
 
+    /**
+     * Select the video url and title.
+     *
+     * @param object $publication
+     * @param object $video
+     * @return bool
+     */
     private function add_video_url_and_title($publication, $video) {
 
         // Try to find a video by preferred configuration.
@@ -209,6 +221,7 @@ class repository_opencast extends repository {
     /**
      * Add data from opencast to the list items.
      *
+     * @param int $ocinstanceid
      * @param object $video
      * @return boolean true, when it is a valid video published for external api.
      */
@@ -263,13 +276,14 @@ class repository_opencast extends repository {
         $publishedvideos = [];
 
         // Get all videos from all instances and series.
-        foreach(\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
-            if(!$ocinstance->isvisible) {
+        foreach (\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
+            if (!$ocinstance->isvisible) {
                 continue;
             }
             $videos = array();
 
-            foreach(\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid, 'ocinstanceid' => $ocinstance->id)) as $mapping) {
+            foreach (\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid,
+                'ocinstanceid' => $ocinstance->id)) as $mapping) {
                 if (!$mapping || !($seriesid = $mapping->get('series'))) {
                     continue;
                 }
@@ -335,14 +349,28 @@ class repository_opencast extends repository {
         return $ret;
     }
 
+    /**
+     * Supported returntypes of the repository.
+     * @return int
+     */
     public function supported_returntypes() {
         return FILE_EXTERNAL;
     }
 
+    /**
+     * Supported filetypes of the repository.
+     * @return string[]
+     */
     public function supported_filetypes() {
         return array('video');
     }
 
+    /**
+     * Prepares data for the php unit test.
+     * @param array $publications
+     * @param object $video
+     * @return mixed
+     */
     public function phpu_adapter_test_listing($publications, $video) {
 
         $channelid = $this->get_channelid();
