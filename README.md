@@ -5,18 +5,18 @@ It is one of multiple plugins integrating Opencast with Moodle.
 
 **Requirements**
 
-- [tool_opencast](https://github.com/unirz-tu-ilmenau/moodle-tool_opencast)
-- Recommended: [block_opencast](https://github.com/unirz-tu-ilmenau/moodle-block_opencast)
-- Optional: [filter_opencast](https://github.com/unirz-tu-ilmenau/moodle-filter_opencast)
+- [tool_opencast](https://github.com/Opencast-Moodle/moodle-tool_opencast)
+- Recommended: [block_opencast](https://github.com/Opencast-Moodle/moodle-block_opencast)
+- Optional: [filter_opencast](https://github.com/Opencast-Moodle/moodle-filter_opencast)
 
 **Usage**
 
 The plugin allows teachers to embed Opencast videos into a course.
-The repository displays all videos that belong to the Opencast series, which is connected to the course.
+The repository displays all videos that belong to the Opencast series that are connected to the course.
 
 ![image](https://user-images.githubusercontent.com/9437254/50089314-caadf180-0205-11e9-93f9-6a7d3f1f6726.png)
 
-The connection, which Opencast series belongs to which Moodle course, is usually done using [block_opencast](https://github.com/unirz-tu-ilmenau/moodle-block_opencast).
+The connection, which Opencast series belong to which Moodle course, is usually done using [block_opencast](https://github.com/Opencast-Moodle/moodle-block_opencast).
 
 The repository is only available within a text editor and will paste the URL to the resource into the content.
 This URL will later be replaced via a Moodle filter to show an embedded player.
@@ -32,12 +32,9 @@ There are two different possibilities:
 * **Display a video using an Opencast player:**
 
     The repository can paste a link to the course content, which leads to a page at which an embeddable Opencast player is provided.
-    For this scenario, you will need the [filter_opencast](https://github.com/unirz-tu-ilmenau/moodle-filter_opencast) plugin as well as an Opencast instance with [configured LTI](https://docs.opencast.org/develop/admin/modules/ltimodule/).
+    For this scenario, you will need the [filter_opencast](https://github.com/Opencast-Moodle/moodle-filter_opencast) plugin.
     The filter will replace the link by an iFrame, which displays the Opencast player.
     In order for this to work, the selected publication channel of the repository instance has to serve the URL to the player within the publication URL.
-    Additionally, the filter will automatically authenticate the user in Opencast using LTI.
-    This way, some kind of resource protection is provided.
-    However, for increased protection, you would need to activate [stream security](https://docs.opencast.org/develop/admin/configuration/stream-security/) in Opencast, which is currently [broken](https://opencast.jira.com/browse/MH-12521).
 
 **Configuration (multiple instances and publication channel)**
 
