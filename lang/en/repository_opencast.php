@@ -24,6 +24,7 @@
  */
 
 $string['configplugin'] = 'Opencast settings';
+$string['opencastinstance'] = 'Opencast instance';
 $string['opencastauthor'] = 'Opencast default author';
 $string['opencastchannelid'] = 'Opencast channelid';
 $string['opencastchannelid_help'] = 'Setup the channelid of the publication channel to search for retrieving url of thumbnail and video.';

@@ -41,6 +41,7 @@ class repository_opencast_testcase extends advanced_testcase
         $generator = $this->getDataGenerator()->get_plugin_generator('repository_opencast');
         $instance = $generator->create_instance([
             'pluginname' => 'Opencast',
+            'opencast_instance' => 1,
             'opencast_author' => 'Test user',
             'opencast_channelid' => 'api',
             'opencast_thumbnailflavor' => 'presenter/search+preview',
@@ -62,6 +63,7 @@ class repository_opencast_testcase extends advanced_testcase
         // Test not valid thumbnail flavor.
         $instance = $generator->create_instance([
             'pluginname' => 'Opencast',
+            'opencast_instance' => 1,
             'opencast_author' => 'Test user',
             'opencast_channelid' => 'api',
             'opencast_thumbnailflavor' => 'notvalid',

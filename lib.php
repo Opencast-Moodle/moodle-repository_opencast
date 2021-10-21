@@ -51,6 +51,13 @@ class repository_opencast extends repository
             return false;
         }
 
+        $options = array();
+        foreach (\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
+            $options[$ocinstance->id] = $ocinstance->name;
+        }
+        $mform->addElement('select', 'opencast_instance', get_string('opencastinstance', 'repository_opencast'), $options);
+        $mform->setType('opencast_instance', PARAM_INT);
+
         $mform->addElement('text', 'opencast_author', get_string('opencastauthor', 'repository_opencast'));
         $mform->setType('opencast_author', PARAM_TEXT);
 
@@ -84,6 +91,7 @@ class repository_opencast extends repository
      * @return bool
      */
     public function set_option($options = array()) {
+        $options['opencast_instance'] = clean_param($options['opencast_instance'], PARAM_INT);
         $options['opencast_author'] = clean_param($options['opencast_author'], PARAM_TEXT);
         $options['opencast_channelid'] = clean_param($options['opencast_channelid'], PARAM_TEXT);
         $options['opencast_playerurl'] = clean_param($options['opencast_playerurl'], PARAM_BOOL);
@@ -102,6 +110,7 @@ class repository_opencast extends repository
     public static function get_instance_option_names() {
 
         $instanceoptions = array();
+        $instanceoptions [] = 'opencast_instance';
         $instanceoptions [] = 'opencast_author';
         $instanceoptions [] = 'opencast_channelid';
         $instanceoptions [] = 'opencast_playerurl';
@@ -125,6 +134,14 @@ class repository_opencast extends repository
      */
     private function get_author() {
         return self::get_option('opencast_author');
+    }
+
+    /**
+     * Get Opencast instance id to which this repository belongs.
+     * @return string
+     */
+    private function get_ocinstance() {
+        return self::get_option('opencast_instance');
     }
 
     /**
@@ -275,36 +292,32 @@ class repository_opencast extends repository
     private function get_course_videos($courseid) {
         $publishedvideos = [];
 
-        // Get all videos from all instances and series.
-        foreach (\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
-            if (!$ocinstance->isvisible) {
+        // Get all videos from all series.
+        $ocinstanceid = $this->get_ocinstance();
+        $videos = array();
+
+        foreach (\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid,
+            'ocinstanceid' => $ocinstanceid)) as $mapping) {
+            if (!$mapping || !($seriesid = $mapping->get('series'))) {
                 continue;
             }
-            $videos = array();
 
-            foreach (\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid,
-                'ocinstanceid' => $ocinstance->id)) as $mapping) {
-                if (!$mapping || !($seriesid = $mapping->get('series'))) {
-                    continue;
-                }
+            $seriesfilter = "series:" . $seriesid;
 
-                $seriesfilter = "series:" . $seriesid;
-
-                $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter=' . urlencode($seriesfilter);
-                try {
-                    $api = new api($ocinstance->id);
-                    $seriesvideos = $api->oc_get($query);
-                    $seriesvideos = json_decode($seriesvideos);
-                    $videos = array_merge($videos, $seriesvideos);
-                } catch (\moodle_exception $e) {
-                    continue;
-                }
+            $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter=' . urlencode($seriesfilter);
+            try {
+                $api = new api($ocinstanceid);
+                $seriesvideos = $api->oc_get($query);
+                $seriesvideos = json_decode($seriesvideos);
+                $videos = array_merge($videos, $seriesvideos);
+            } catch (\moodle_exception $e) {
+                continue;
             }
+        }
 
-            foreach ($videos as $video) {
-                if ($this->add_video_published_data($ocinstance->id, $video)) {
-                    $publishedvideos[] = $video;
-                }
+        foreach ($videos as $video) {
+            if ($this->add_video_published_data($ocinstanceid, $video)) {
+                $publishedvideos[] = $video;
             }
         }
 
