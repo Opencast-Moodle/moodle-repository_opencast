@@ -1,4 +1,4 @@
-# moodle_repository_opencast
+# moodle-repository_opencast
 
 The repository plugin serves as a way to embed videos of your Opencast system into a Moodle course.
 It is one of multiple plugins integrating Opencast with Moodle.
