@@ -41,5 +41,5 @@ $string['opencastvideoflavor'] = 'Flavor to get video';
 $string['opencastvideoflavor_help'] = 'A publication may have several attachments with different flavors. Setup a flavor that should be used to retrieve the video url.
     If you leave this blank, the first available video url found in attachments will be used.';
 $string['opencast:view'] = 'View repository opencast';
-$string['pluginname'] = 'Opencast Videos';
+$string['pluginname'] = 'Opencast videos';
 $string['privacy:metadata'] = 'The opencast repository only displays videos from Opencast, but does not effect or store any personal data.';
