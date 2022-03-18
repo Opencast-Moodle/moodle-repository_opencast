@@ -21,13 +21,15 @@
  * @author     Andreas Wagner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
+namespace repository_opencast;
+
+use advanced_testcase;
+use repository_opencast;
 
 /**
  * Class repository_opencast_testcase
  */
-class repository_opencast_testcase extends advanced_testcase
-{
+class repository_opencast_test extends advanced_testcase {
 
     public function test_add_video_published_data() {
         global $CFG;

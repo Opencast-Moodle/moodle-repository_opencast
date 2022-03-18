@@ -36,8 +36,7 @@ use \tool_opencast\local\api;
  * @author     Andreas Wagner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class repository_opencast extends repository
-{
+class repository_opencast extends repository {
 
     /**
      * This method adds a select form and additional information to the settings form..
@@ -108,15 +107,14 @@ class repository_opencast extends repository
      * @return array
      */
     public static function get_instance_option_names() {
-
         $instanceoptions = array();
-        $instanceoptions [] = 'opencast_instance';
-        $instanceoptions [] = 'opencast_author';
-        $instanceoptions [] = 'opencast_channelid';
-        $instanceoptions [] = 'opencast_playerurl';
-        $instanceoptions [] = 'opencast_thumbnailflavor';
-        $instanceoptions [] = 'opencast_thumbnailflavorfallback';
-        $instanceoptions [] = 'opencast_videoflavor';
+        $instanceoptions[] = 'opencast_instance';
+        $instanceoptions[] = 'opencast_author';
+        $instanceoptions[] = 'opencast_channelid';
+        $instanceoptions[] = 'opencast_playerurl';
+        $instanceoptions[] = 'opencast_thumbnailflavor';
+        $instanceoptions[] = 'opencast_thumbnailflavorfallback';
+        $instanceoptions[] = 'opencast_videoflavor';
         return $instanceoptions;
     }
 
@@ -152,7 +150,6 @@ class repository_opencast extends repository
      * @return string
      */
     private function add_video_thumbnail_url($publication, $video) {
-
         // Try to find a thumbnail url based on configuration.
         $thumbnailflavor = self::get_option('opencast_thumbnailflavor');
         if (!empty($thumbnailflavor)) {
@@ -198,7 +195,6 @@ class repository_opencast extends repository
      * @return bool
      */
     private function add_video_url_and_title($publication, $video) {
-
         // Try to find a video by preferred configuration.
         $videoflavor = self::get_option('opencast_videoflavor');
         if (!empty($videoflavor)) {
@@ -243,7 +239,6 @@ class repository_opencast extends repository
      * @return boolean true, when it is a valid video published for external api.
      */
     private function add_video_published_data($ocinstanceid, $video) {
-
         $channelid = $this->get_channelid();
         $published = (count($video->publication_status) > 0 && (in_array($channelid, $video->publication_status)));
 
@@ -385,7 +380,6 @@ class repository_opencast extends repository
      * @return mixed
      */
     public function phpu_adapter_test_listing($publications, $video) {
-
         $channelid = $this->get_channelid();
 
         foreach ($publications as $publication) {
@@ -403,5 +397,4 @@ class repository_opencast extends repository
         }
         return $video;
     }
-
 }

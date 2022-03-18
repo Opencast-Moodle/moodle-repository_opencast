@@ -24,8 +24,6 @@
 
 namespace repository_opencast\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy Subsystem for repository_opencast implementing null_provider.
  *
