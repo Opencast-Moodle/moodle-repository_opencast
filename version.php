@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release   = 'v3.11-r4';
-$plugin->version   = 2021091201;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release   = 'v3.11-r5';
+$plugin->version   = 2022031800;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2015050500;        // Requires this Moodle version.
 $plugin->component = 'repository_opencast'; // Full name of the plugin (used for diagnostics).
 $plugin->dependencies = array('tool_opencast' => 2021091200);
