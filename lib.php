@@ -248,7 +248,8 @@ class repository_opencast extends repository {
 
         $api = new api($ocinstanceid);
 
-        $query = '/api/events/' . $video->identifier . '/publications/';
+        // Use sign=true parameter to get signed URLs when Opencasts URL signing is turned on. sign=true does not harm when turned off.
+        $query = '/api/events/' . $video->identifier . '/publications?sign=true';
         $result = $api->oc_get($query);
         $publications = json_decode($result);
 
