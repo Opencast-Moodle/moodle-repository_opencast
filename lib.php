@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/repository/lib.php');
 
-use \tool_opencast\local\api;
+use tool_opencast\local\api;
 
 /**
  *  repository_opencast class is used to browse opencast files
@@ -50,7 +50,7 @@ class repository_opencast extends repository {
             return false;
         }
 
-        $options = array();
+        $options = [];
         foreach (\tool_opencast\local\settings_api::get_ocinstances() as $ocinstance) {
             $options[$ocinstance->id] = $ocinstance->name;
         }
@@ -89,7 +89,7 @@ class repository_opencast extends repository {
      * @param array $options settings
      * @return bool
      */
-    public function set_option($options = array()) {
+    public function set_option($options = []) {
         $options['opencast_instance'] = clean_param($options['opencast_instance'], PARAM_INT);
         $options['opencast_author'] = clean_param($options['opencast_author'], PARAM_TEXT);
         $options['opencast_channelid'] = clean_param($options['opencast_channelid'], PARAM_TEXT);
@@ -107,7 +107,7 @@ class repository_opencast extends repository {
      * @return array
      */
     public static function get_instance_option_names() {
-        $instanceoptions = array();
+        $instanceoptions = [];
         $instanceoptions[] = 'opencast_instance';
         $instanceoptions[] = 'opencast_author';
         $instanceoptions[] = 'opencast_channelid';
@@ -289,10 +289,10 @@ class repository_opencast extends repository {
 
         // Get all videos from all series.
         $ocinstanceid = $this->get_ocinstance();
-        $videos = array();
+        $videos = [];
 
-        foreach (\tool_opencast\seriesmapping::get_records(array('courseid' => $courseid,
-            'ocinstanceid' => $ocinstanceid)) as $mapping) {
+        foreach (\tool_opencast\seriesmapping::get_records(['courseid' => $courseid,
+            'ocinstanceid' => $ocinstanceid, ]) as $mapping) {
             if (!$mapping || !($seriesid = $mapping->get('series'))) {
                 continue;
             }
@@ -334,14 +334,14 @@ class repository_opencast extends repository {
 
         $videos = $this->get_course_videos($course->id);
 
-        $ret = array();
+        $ret = [];
         $ret['dynload'] = false;
         $ret['nosearch'] = true;
         $ret['nologin'] = true;
-        $ret['list'] = array();
+        $ret['list'] = [];
 
         foreach ($videos as $video) {
-            $listitem = array();
+            $listitem = [];
             $listitem['title'] = $video->title;
             if (!file_extension_in_typegroup($video->title, $this->supported_filetypes())) {
                 $listitem['title'] = $video->title . '.mp4';
@@ -370,7 +370,7 @@ class repository_opencast extends repository {
      * @return string[]
      */
     public function supported_filetypes() {
-        return array('video');
+        return ['video'];
     }
 
     /**

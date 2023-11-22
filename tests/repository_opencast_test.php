@@ -31,6 +31,11 @@ use repository_opencast;
  */
 class repository_opencast_test extends advanced_testcase {
 
+    /**
+     * Test creation of instance...
+     *
+     * @covers \repository_opencast\lib.php
+     */
     public function test_add_video_published_data() {
         global $CFG;
 
@@ -49,7 +54,7 @@ class repository_opencast_test extends advanced_testcase {
             'opencast_thumbnailflavor' => 'presenter/search+preview',
             'opencast_thumbnailflavorfallback' => 'presentation/search+preview',
             'opencast_videoflavor' => 'delivery/h264-720p',
-            'opencast_playerurl' => ''
+            'opencast_playerurl' => '',
         ]);
         $repository = new repository_opencast($instance->id);
 
@@ -71,7 +76,7 @@ class repository_opencast_test extends advanced_testcase {
             'opencast_thumbnailflavor' => 'notvalid',
             'opencast_thumbnailflavorfallback' => 'presentation/search+preview',
             'opencast_videoflavor' => 'delivery/h264-720p',
-            'opencast_playerurl' => ''
+            'opencast_playerurl' => '',
         ]);
         $repository = new repository_opencast($instance->id);
 
