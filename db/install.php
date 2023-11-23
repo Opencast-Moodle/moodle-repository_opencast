@@ -33,7 +33,7 @@ function xmldb_repository_opencast_install() {
     $result = true;
     require_once($CFG->dirroot . '/repository/lib.php');
 
-    $opencastplugin = new repository_type('opencast', array(), true);
+    $opencastplugin = new repository_type('opencast', [], true);
 
     if (!$id = $opencastplugin->create(true)) {
         $result = false;
