@@ -246,20 +246,13 @@ class repository_opencast extends repository {
             return false;
         }
 
-        $api = new api($ocinstanceid);
-
-        // Use sign=true parameter to get signed URLs when Opencasts URL signing is turned on. sign=true does not harm when turned off.
-        $query = '/api/events/' . $video->identifier . '/publications?sign=true';
-        $result = $api->oc_get($query);
-        $publications = json_decode($result);
-
-        if (empty($publications)) {
+        if (empty($video->publications)) {
             return false;
         }
 
         $useplayerurl = self::get_option('opencast_playerurl');
 
-        foreach ($publications as $publication) {
+        foreach ($video->publications as $publication) {
 
             if ($publication->channel == $channelid) {
 
@@ -269,14 +262,13 @@ class repository_opencast extends repository {
                 // Add a url to video.
                 if ($useplayerurl) {
                     $video->url = $publication->url;
+                    return true;
                 } else {
-                    if (!$publication->media || !$this->add_video_url_and_title($publication, $video)) {
-                        return false;
-                    }
+                    return $publication->media && $this->add_video_url_and_title($publication, $video);
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -300,7 +292,7 @@ class repository_opencast extends repository {
 
             $seriesfilter = "series:" . $seriesid;
 
-            $query = '/api/events?sign=1&withmetadata=1&withpublications=1&filter=' . urlencode($seriesfilter);
+            $query = '/api/events?sign=true&withmetadata=true&withpublications=true&filter=' . urlencode($seriesfilter);
             try {
                 $api = new api($ocinstanceid);
                 $seriesvideos = $api->oc_get($query);
