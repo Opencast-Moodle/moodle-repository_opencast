@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'repository_opencast';
 $plugin->release = 'v4.3-r1';
 $plugin->version = 2024060400;
-$plugin->requires = 2020061524; // Requires Moodle 3.9+.
+$plugin->requires = 2022112810; // Requires Moodle 4.1+.
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
-    'tool_opencast' => 2023112200,
+    'tool_opencast' => 2024060400,
 ];
