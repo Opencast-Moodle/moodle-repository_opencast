@@ -292,7 +292,7 @@ class repository_opencast extends repository {
 
             $seriesfilter = "series:" . $seriesid;
 
-            $query = '/api/events?sign=true&withmetadata=true&withpublications=true&filter=' . urlencode($seriesfilter);
+            $query = '/api/events?sign=true&withmetadata=false&withpublications=true&filter=' . urlencode($seriesfilter);
             try {
                 $api = new api($ocinstanceid);
                 $seriesvideos = $api->oc_get($query);
