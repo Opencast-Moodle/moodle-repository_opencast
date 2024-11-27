@@ -23,16 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 $string['configplugin'] = 'Opencast settings';
-$string['opencastinstance'] = 'Opencast instance';
+$string['opencast:view'] = 'View repository opencast';
 $string['opencastauthor'] = 'Opencast default author';
 $string['opencastchannelid'] = 'Opencast channelid';
 $string['opencastchannelid_help'] = 'Setup the channelid of the publication channel to search for retrieving url of thumbnail and video.';
+$string['opencastinstance'] = 'Opencast instance';
 $string['opencastplayerurl'] = 'Embedd URL to player instead of media file.';
 $string['opencastplayerurl_help'] = 'If checked, the URL of the Opencast player is used. Otherwise the repository selects the URL to a video file of the Opencast event.';
 $string['opencastthumbnailflavor'] = 'Preferred flavor to get thumbnail';
 $string['opencastthumbnailflavor_help'] = 'A publication may have several attachments with different flavors.
-    Setup the flavor (for example "presenter/search+preview"), that should be used to retrieve the thumbnail url. If there is no attachment with this flavor, the
+    Setup the flavor (for example \'presenter/search+preview\'), that should be used to retrieve the thumbnail url. If there is no attachment with this flavor, the
     plugin will try to find an attachment with the fallback flavor.';
 $string['opencastthumbnailflavorfallback'] = 'Fallback flavor to get thumbnail';
 $string['opencastthumbnailflavorfallback_help'] = 'Setup the flavor, that should be used, if the there is no attachment with the preferred flavor above is available.
@@ -40,6 +43,5 @@ $string['opencastthumbnailflavorfallback_help'] = 'Setup the flavor, that should
 $string['opencastvideoflavor'] = 'Flavor to get video';
 $string['opencastvideoflavor_help'] = 'A publication may have several attachments with different flavors. Setup a flavor that should be used to retrieve the video url.
     If you leave this blank, the first available video url found in attachments will be used.';
-$string['opencast:view'] = 'View repository opencast';
 $string['pluginname'] = 'Opencast videos';
 $string['privacy:metadata'] = 'The opencast repository only displays videos from Opencast, but does not effect or store any personal data.';
