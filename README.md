@@ -22,8 +22,8 @@ Requirements
 ------------
 
 * tool_opencast
-* Recommended: block_opencast
-* Optional: filter_opencast
+* *Recommended:* block_opencast
+* *Optional:* filter_opencast
 
 
 Installation
@@ -43,14 +43,14 @@ Admin Settings
 As an administrator you can set the default values instance-wide on the settings page for
 administrators in the opencast repository module:
 
-* Name: Name of the repository instance.
-* Opencast instance: The Opencast instance, from which the repository retrieves videos.
-* Opencast default author: The default author, that is displayed for a video, if the creator is not given. Empty by default.
-* Opencast channelid:: The channel id of the publication in Opencast. With a default Opencast installation you can use engage-player.
-* Preferred flavor to get thumbnail:: The flavor for the thumbnail. Leave empty for the Opencast default.
-* Fallback flavor to get thumbnail: Fallback flavor for the thumbnail, if there is no thumbnail for the preferred flavor.
-* Embedd URL to player instead of media file: Whether the URL to the Opencast player should be embedded. If this box is not checked, a direct link to a video file will be embedded.
-* Flavor to get video: The flavor of the video. Leave empty, to use the Opencast default.
+* *Name:* Name of the repository instance.
+* *Opencast instance:* The Opencast instance, from which the repository retrieves videos.
+* *Opencast default author:* The default author, that is displayed for a video, if the creator is not given. Empty by default.
+* *Opencast channelid:* The channel id of the publication in Opencast. With a default Opencast installation you can use engage-player.
+* *Preferred flavor to get thumbnail:* The flavor for the thumbnail. Leave empty for the Opencast default.
+* *Fallback flavor to get thumbnail:* Fallback flavor for the thumbnail, if there is no thumbnail for the preferred flavor.
+* *Embedd URL to player instead of media file:* Whether the URL to the Opencast player should be embedded. If this box is not checked, a direct link to a video file will be embedded.
+* *Flavor to get video:* The flavor of the video. Leave empty, to use the Opencast default.
 
 
 Documentation

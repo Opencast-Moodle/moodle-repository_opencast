@@ -30,6 +30,7 @@ $plugin->component = 'repository_opencast';
 $plugin->release = 'v4.5-r2';
 $plugin->version = 2024111101;
 $plugin->requires = 2024100700; // Requires Moodle 4.5+.
+$plugin->supported = [405, 405];
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
     'tool_opencast' => 2024111100,
