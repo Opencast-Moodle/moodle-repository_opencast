@@ -290,14 +290,19 @@ class repository_opencast extends repository {
                 continue;
             }
 
-            $seriesfilter = "series:" . $seriesid;
-
-            $query = '/api/events?sign=true&withmetadata=false&withpublications=true&filter=' . urlencode($seriesfilter);
+            $params = [
+                'sign' => true,
+                'withmetadata' => false,
+                'withpublications' => true,
+            ];
             try {
-                $api = new api($ocinstanceid);
-                $seriesvideos = $api->oc_get($query);
-                $seriesvideos = json_decode($seriesvideos);
-                $videos = array_merge($videos, $seriesvideos);
+                $api = api::get_instance($ocinstanceid);
+                $response = $api->opencastapi->eventsApi->getBySeries($seriesid, $params);
+                $code = $response['code'];
+                if ($code == 200) {
+                    $seriesvideos = $response['body'];
+                    $videos = array_merge($videos, $seriesvideos);
+                }
             } catch (\moodle_exception $e) {
                 continue;
             }
