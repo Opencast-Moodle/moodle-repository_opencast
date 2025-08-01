@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+5.0.0 (2024-08-01)
+------------------
+* [CHANGE] #39 using oc php library
+*  Moodle 5.0 compatible version
+
+
 4.5.1 (2024-12-03)
 ------------------
 * [FIXED] #33 Fetching course videos: change query parameter to not retrieve metadata
@@ -9,5 +15,5 @@ CHANGELOG
  
 4.5.0 (2024-11-12)
 ------------------
-Moodle 4.5 compatible version
+* Moodle 4.5 compatible version
 
