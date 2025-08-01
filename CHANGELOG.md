@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+4.5.3 (2025-08-01)
+------------------
+* [CHANGE] #39 using oc php library
+
+
 4.5.1 (2024-12-03)
 ------------------
 * [FIXED] #33 Fetching course videos: change query parameter to not retrieve metadata
