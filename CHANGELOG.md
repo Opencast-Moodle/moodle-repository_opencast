@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+5.1.0 (2026-01-17)
+------------------
+* Moodle 5.1 compatible version
+
+
 5.0.0 (2024-08-01)
 ------------------
 * [CHANGE] #39 using oc php library
