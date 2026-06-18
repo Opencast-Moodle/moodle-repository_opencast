@@ -301,6 +301,13 @@ class repository_opencast extends repository {
                 $code = $response['code'];
                 if ($code == 200) {
                     $seriesvideos = $response['body'];
+
+                    if ($api?->jwtservice?->is_enabled() ?? false) {
+                        foreach ($seriesvideos as &$episode) {
+                            $api->jwtservice->attach_jwt_to_event_publication_urls($episode, $episode->identifier);
+                        }
+                    }
+
                     $videos = array_merge($videos, $seriesvideos);
                 }
             } catch (\moodle_exception $e) {
