@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+4.5.4 (2026-07-22)
+------------------
+* [FEATURE] #41 Support JWT authentication
+
+
 4.5.3 (2025-08-01)
 ------------------
 * [CHANGE] #39 using oc php library
