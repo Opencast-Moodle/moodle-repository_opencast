@@ -29,14 +29,13 @@ use repository_opencast;
 /**
  * Class repository_opencast_testcase
  */
-class repository_opencast_test extends advanced_testcase {
-
+final class repository_opencast_test extends advanced_testcase {
     /**
      * Test creation of instance...
      *
      * @covers \repository_opencast\lib.php
      */
-    public function test_add_video_published_data() {
+    public function test_add_video_published_data(): void {
         global $CFG;
 
         require_once($CFG->dirroot . '/repository/opencast/lib.php');
