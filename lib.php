@@ -37,7 +37,6 @@ use tool_opencast\local\api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class repository_opencast extends repository {
-
     /**
      * This method adds a select form and additional information to the settings form..
      *
@@ -45,8 +44,10 @@ class repository_opencast extends repository {
      */
     public static function instance_config_form($mform) {
         if (!has_capability('moodle/site:config', context_system::instance())) {
-            $mform->addElement('static', null, '', get_string('nopermissions', 'error', get_string('configplugin',
-                'repository_opencast')));
+            $mform->addElement('static', null, '', get_string('nopermissions', 'error', get_string(
+                'configplugin',
+                'repository_opencast'
+            )));
             return false;
         }
 
@@ -69,8 +70,11 @@ class repository_opencast extends repository {
         $mform->setType('opencast_thumbnailflavor', PARAM_TEXT);
         $mform->addHelpButton('opencast_thumbnailflavor', 'opencastthumbnailflavor', 'repository_opencast');
 
-        $mform->addElement('text', 'opencast_thumbnailflavorfallback',
-            get_string('opencastthumbnailflavorfallback', 'repository_opencast'));
+        $mform->addElement(
+            'text',
+            'opencast_thumbnailflavorfallback',
+            get_string('opencastthumbnailflavorfallback', 'repository_opencast')
+        );
         $mform->setType('opencast_thumbnailflavorfallback', PARAM_TEXT);
         $mform->addHelpButton('opencast_thumbnailflavorfallback', 'opencastthumbnailflavorfallback', 'repository_opencast');
 
@@ -198,7 +202,6 @@ class repository_opencast extends repository {
         // Try to find a video by preferred configuration.
         $videoflavor = self::get_option('opencast_videoflavor');
         if (!empty($videoflavor)) {
-
             foreach ($publication->media as $media) {
                 if (!empty($media->has_video) && ($media->flavor === $videoflavor)) {
                     $video->url = $media->url;
@@ -215,7 +218,6 @@ class repository_opencast extends repository {
 
         // Automatically find a suitable video.
         foreach ($publication->media as $media) {
-
             if (!empty($media->has_video)) {
                 $video->url = $media->url;
                 // Check mimetype needed for embedding in moodle.
@@ -253,9 +255,7 @@ class repository_opencast extends repository {
         $useplayerurl = self::get_option('opencast_playerurl');
 
         foreach ($video->publications as $publication) {
-
             if ($publication->channel == $channelid) {
-
                 // Add a suitable thumbnail url.
                 $this->add_video_thumbnail_url($publication, $video);
 
@@ -284,8 +284,10 @@ class repository_opencast extends repository {
         $ocinstanceid = $this->get_ocinstance();
         $videos = [];
 
-        foreach (\tool_opencast\seriesmapping::get_records(['courseid' => $courseid,
-            'ocinstanceid' => $ocinstanceid, ]) as $mapping) {
+        foreach (
+            \tool_opencast\seriesmapping::get_records(['courseid' => $courseid,
+            'ocinstanceid' => $ocinstanceid, ]) as $mapping
+        ) {
             if (!$mapping || !($seriesid = $mapping->get('series'))) {
                 continue;
             }
@@ -301,6 +303,13 @@ class repository_opencast extends repository {
                 $code = $response['code'];
                 if ($code == 200) {
                     $seriesvideos = $response['body'];
+
+                    if ($api?->jwtservice?->is_enabled() ?? false) {
+                        foreach ($seriesvideos as &$episode) {
+                            $api->jwtservice->attach_jwt_to_event_publication_urls($episode, $episode->identifier);
+                        }
+                    }
+
                     $videos = array_merge($videos, $seriesvideos);
                 }
             } catch (\moodle_exception $e) {
@@ -328,7 +337,7 @@ class repository_opencast extends repository {
         global $CFG;
 
         require_once($CFG->dirroot . '/lib/accesslib.php');
-        list($context, $course, $cm) = get_context_info_array($this->context->id);
+        [$context, $course, $cm] = get_context_info_array($this->context->id);
 
         $videos = $this->get_course_videos($course->id);
 
@@ -381,9 +390,7 @@ class repository_opencast extends repository {
         $channelid = $this->get_channelid();
 
         foreach ($publications as $publication) {
-
             if ($publication->channel == $channelid) {
-
                 // Add a suitable thumbnail url.
                 $this->add_video_thumbnail_url($publication, $video);
 

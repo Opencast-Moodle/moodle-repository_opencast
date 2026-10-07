@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+5.2.0 (2026-10-02)
+------------------
+* Moodle 5.2 compatible version
+
 5.1.0 (2026-01-17)
 ------------------
 * Moodle 5.1 compatible version
